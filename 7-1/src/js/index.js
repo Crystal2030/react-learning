@@ -4,7 +4,9 @@ import ComponentHeader from './components/header';
 
 class Index extends React.Component{
 	render() {
-		<ComponentHeader/>
+		return (
+			<ComponentHeader/>
+		)
 	}
 }
 

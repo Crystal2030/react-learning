@@ -1,10 +1,11 @@
 var webpack = require('webpack');
 var path = require('path');
-
-console.log('----',__dirname)
-
 module.exports = {
-	entry: './src/js/index.js',
+	entry: path.resolve(__dirname, "./src/js/index.js"),
+	output: {
+		path: path.resolve(__dirname, './lib/'),
+		filename: 'bundle.js',
+	},
 	module: {
 		loaders: [{
 			test: /\.js?$/,
@@ -15,8 +16,7 @@ module.exports = {
 			}
 		}]
 	},
-	output: {
-		path: __dirname+'/src/js',
-		filename: 'bundle.js'
-	}
-}
+	resolve: {
+		extensions: ['.js', '.css', 'json']
+	},
+};
