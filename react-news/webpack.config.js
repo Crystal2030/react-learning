@@ -5,12 +5,15 @@ const HTMLWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: {
+        vendor: ['babel-polyfill'],
         main: path.resolve(__dirname, './src/router.js')
     },
     output: {
-        path: path.resolve(__dirname, './build'),
-        filename: 'js/[name].js'
+        path: path.resolve(__dirname, 'build'),
+        filename: 'js/[name].js',
+        publicPath: '/'
     },
+    devtool: 'inline-source-map',
     module: {
         rules: [
             {
@@ -31,15 +34,22 @@ module.exports = {
                 }
             },
             {
-                test: /\.less/,
+                test: /\.css$/,
+                use: ['css-hot-loader'].concat(ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: ['css-loader', 'postcss-loader']
+                }))
+            },
+            {
+                test: /\.less$/,
                 include: [
                     path.resolve(__dirname, './src'),
                     path.resolve(__dirname, './node_modules/'),//解决webpack 配置 antd 样式出错
                 ],
-                use: ExtractTextPlugin.extract({
+                use: ['css-hot-loader'].concat(ExtractTextPlugin.extract({
                     fallback: 'style-loader',
-                    use: ['css-loader', 'less-loader']
-                })
+                    use: ['css-loader', 'postcss-loader', 'less-loader']
+                }))
             },
             {
                 test: /\.(png|jpg[e]?|gif|png|svg)$/,
@@ -63,11 +73,26 @@ module.exports = {
             template: './index.html', // 源模板文件
             filename: './index.html'// 输出文件【注意：这里的根路径是module.exports.output.path】
         }),
-        new ExtractTextPlugin("css/[name].css")
+        new webpack.ProvidePlugin({
+            "React": "react",
+            "ReactDOM": "react-dom",
+        }),
+        new ExtractTextPlugin("css/[name].css"),
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.
+        new webpack.NoEmitOnErrorsPlugin(),
     ],
     devServer: {
+        contentBase: path.resolve(__dirname, 'build'),
+        publicPath: '/',
         host: 'localhost',
-        port: 3002,
+        port: 3006,
+        historyApiFallback: true,
+        open: true,
+        hot: true,
+        stats: {
+            colors: true
+        }
 
     }
 }
