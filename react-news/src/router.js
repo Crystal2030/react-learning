@@ -27,11 +27,15 @@ class Index extends React.Component{
             </HashRouter>*/}
                 {/*pc端*/}
                 <MediaQuery query="(min-device-width: 1224px)">
-                    <PCIndex/>
+                    <HashRouter>
+                        <Route component={PCIndex}></Route>
+                    </HashRouter>
                 </MediaQuery>
                 {/*移动端*/}
                 <MediaQuery query="(max-device-width: 1224px)">
-                    <MobileIndex/>
+                    <HashRouter>
+                        <Route component={MobileIndex}></Route>
+                    </HashRouter>
                 </MediaQuery>
             </div>
 
