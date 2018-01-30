@@ -1,18 +1,14 @@
 import React from 'react';
 import {Row, Col} from 'antd';
 import {Link} from 'react-router-dom';
-import Tloader from 'react-touch-loader';
-
+import ReactPullToRefresh from 'react-pull-to-refresh';
 
 export default class MobileList extends React.Component {
     constructor() {
         super();
         this.state = {
             news: '',
-            count: 5,
-            hasMore: 0, //是否显示加载更多,
-            initializing: 1, //组件初始化状态
-            refreshedAt: Date.now()
+
         };
     }
 
@@ -24,38 +20,23 @@ export default class MobileList extends React.Component {
             .then(response => response.json())
             .then(json => this.setState({
                 news: json
-            }))
+            }));
     }
 
-    componentDidMount() {
-        setTimeout(() => {
-            this.setState({
-                hasMore: 1,
-                initializing: 2, //所以组件都加在完成 
-            })
-        }, 2e3)
-    }
-
-    loadMore(resolve) {
-        setTimeout(() => {
-            const count = this.state.count;
-            const myFetchOptions = {
-                method: 'GET'
-            }
-            this.setState({
-                count: count + 5,
-            });
-            fetch("http://newsapi.gugujiankong.com/Handler.ashx?action=getnews&type=" + this.props.type + "&count=" + this.state.count, myFetchOptions)
-                .then(response => response.json())
-                .then(json => this.setState({
+    handleRefresh(resolve) {
+        const myFetchOptions = {
+            method: 'GET'
+        }
+        fetch("http://newsapi.gugujiankong.com/Handler.ashx?action=getnews&type=yule&count=20", myFetchOptions)
+            .then(response => response.json())
+            .then(json => {
+                this.setState({
                     news: json
-                }));
-            this.setState({
-                hasMore: count > 0 && count < 50
+                });
+                resolve();//数据加载完了，不要再转圈圈了
             });
-            resolve();
-        }, 2e3)
-    };
+    }
+
 
     render() {
         const {news} = this.state;
@@ -82,16 +63,15 @@ export default class MobileList extends React.Component {
             ))
             :
             '没有加载到任何新闻';
-        const {hasMore, initializing, refreshedAt} = this.state;
 
         return (
             <div>
                 <Row>
                     <Col span={24}>
-                        <Tloader class="main" onLoadMore={this.loadMore.bind(this)} hasMore={hasMore}
-                                 initializing={initializing}>
-                            {newsList}
-                        </Tloader>
+                        <ReactPullToRefresh onRefresh={this.handleRefresh.bind(this)} style={{textAlign: "center"}}>
+                            <span class="genericon genericon-next"></span>
+                            <div>{newsList}</div>
+                        </ReactPullToRefresh>
                     </Col>
                 </Row>
             </div>
