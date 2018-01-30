@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card} from 'antd';
+import {Card, BackTop} from 'antd';
 import {Link} from 'react-router-dom'
 
 
@@ -10,7 +10,7 @@ export default class PCNewsImageBlock extends React.Component{
             news: ''
         };
     }
-    componentWillMount() {
+    componentDidMount() {
         const myFetchOptions = {
             method: 'GET'
         }
@@ -55,6 +55,7 @@ export default class PCNewsImageBlock extends React.Component{
                 <Card title={this.props.cardTitle} bordered={true} style={{width: this.props.width}}>
                     {newsList}
                 </Card>
+                <BackTop></BackTop>
             </div>
         )
     }

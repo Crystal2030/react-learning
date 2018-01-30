@@ -19,6 +19,15 @@ class MobileHeader extends React.Component {
             userid: 0
         }
     }
+    componentWillMount() {
+        if(localStorage.userid!='') {
+            this.setState({
+                hasLogined: true,
+                userNickName: localStorage.userNickName,
+                userId: localStorage.userid
+            })
+        }
+    }
 
     setModalVisible(value) {
         this.setState({modalVisible: value});
@@ -49,6 +58,8 @@ class MobileHeader extends React.Component {
                     userNickName: json.NickUserName,
                     userid: json.UserId
                 });
+                localStorage.userid= json.UserId;
+                localStorage.userNickName = json.NickUserName;
 
                 if(this.state.action == "login") {
                     this.setState({
@@ -75,10 +86,11 @@ class MobileHeader extends React.Component {
     }
     render() {
         let {getFieldDecorator} = this.props.form;
+        console.log('1111111',this.state.hasLogined)
         const userShow = this.state.hasLogined ?
-            <a>
-                <Icon type="index" />
-            </a>
+            <Link to={`/usercenter`}>
+                <Icon type="inbox" />
+            </Link>
             :
             <Icon type="setting" onClick={this.login.bind(this)} />
         return (
@@ -93,7 +105,7 @@ class MobileHeader extends React.Component {
                        okText="关闭">
                     <Tabs type="card" onchange={this.callback.bind(this)}>
                         <TabPane tab="登录" key="1">
-                            <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
+                            <Form layout="horizontal" onSubmit={this.handleSubmit.bind(this)}>
                                 <FormItem label="账户">
                                     {getFieldDecorator('r_userName', {})
                                     (<Input placeholder="请输入您的账号"/>)
@@ -109,7 +121,7 @@ class MobileHeader extends React.Component {
                             </Form>
                         </TabPane>
                         <TabPane tab="注册" key="2">
-                            <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
+                            <Form layout="horizontal" onSubmit={this.handleSubmit.bind(this)}>
                                 <FormItem label="账户">
                                     {getFieldDecorator('r_userName', {})
                                     (<Input placeholder="请输入您的账号"/>)
