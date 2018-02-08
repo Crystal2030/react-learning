@@ -23,7 +23,7 @@ export default class MobileList extends React.Component {
             }));
     }
 
-    handleRefresh(resolve) {
+    handleRefresh(resolve, reject) {
         const myFetchOptions = {
             method: 'GET'
         }
@@ -34,6 +34,9 @@ export default class MobileList extends React.Component {
                     news: json
                 });
                 resolve();//数据加载完了，不要再转圈圈了
+            })
+            .catch(err => {
+                reject();
             });
     }
 
